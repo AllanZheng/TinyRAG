@@ -12,7 +12,7 @@ import os
 from copy import copy
 from typing import Dict, List, Optional, Tuple, Union
 import numpy as np
-
+import requests
 os.environ['CURL_CA_BUNDLE'] = ''
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv())
@@ -135,6 +135,44 @@ class BgeEmbedding(BaseEmbeddings):
             sentence_embeddings = model_output[0][:, 0]
         sentence_embeddings = torch.nn.functional.normalize(sentence_embeddings, p=2, dim=1)
         return sentence_embeddings[0].tolist()
+
+    def load_model(self, path: str):
+        import torch
+        from transformers import AutoModel, AutoTokenizer
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+        else:
+            device = torch.device("cpu")
+        tokenizer = AutoTokenizer.from_pretrained(path)
+        model = AutoModel.from_pretrained(path).to(device)
+        model.eval()
+        return model, tokenizer
+
+class RemoteBgeEmbedding(BaseEmbeddings):
+    """
+    class for BGE embeddings
+    """
+
+    def __init__(self, path: str = 'BAAI/bge-base-zh-v1.5', is_api: bool = False) -> None:
+        self.path = path
+        self.is_api = is_api
+
+    def get_embedding(self, texts: str) -> List[float]:
+       
+        url = "http://172.18.127.124:40697/v1/embeddings"
+        headers = {"Content-Type": "application/json"}
+        payload = {
+        "input": texts,
+        "model": "bge-m3",
+        "encoding_type": "dense"  # 可选dense/sparse/dense_sparse
+        }
+    
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code == 200:
+            print(response.json())
+            return response.json()["data"][0]["embedding"]  # 首条文本的向量
+        else:
+            raise Exception(f"API调用失败: {response.text}")
 
     def load_model(self, path: str):
         import torch

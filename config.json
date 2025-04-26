@@ -1,0 +1,7 @@
+{
+    "api_url": "http://172.18.127.124:405807/v1",
+    "max_token": 5000,
+    "api_key": "gpustack_dee9ca823290886c_5edfc86aeeeceb1e9ee5162941cb2cb5",
+    "name": "deepseek-r1-32b",
+    "port": 8082
+}
