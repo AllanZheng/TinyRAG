@@ -1,7 +1,7 @@
 from RAG.VectorBase import VectorStore
 from RAG.utils import ReadFiles
 from RAG.LLM import OpenAIChat, InternLMChat
-from RAG.Embeddings import JinaEmbedding,RemoteBgeEmbedding,BgeEmbedding
+from RAG.Embeddings import JinaEmbedding,RemoteBgeEmbedding,BgeEmbedding,ZhipuEmbedding
 
 
 # 没有保存数据库
@@ -25,11 +25,13 @@ vector = VectorStore()
 
 vector.load_vector('./storage') # 加载本地的数据库
 
-question = '逆向纠错的原理是什么？'
+question = '介绍下git'
 
 # embedding = ZhipuEmbedding() # 创建EmbeddingModel
 bgeEmbedding = BgeEmbedding()
 content = vector.query(question, EmbeddingModel=bgeEmbedding, k=1)
 chat = OpenAIChat(model='deepseek-r1-32b')
+print(question)
+print(content)
 print(chat.chat(question, [], content))
 

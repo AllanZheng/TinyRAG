@@ -122,7 +122,7 @@ class BgeEmbedding(BaseEmbeddings):
     class for BGE embeddings
     """
 
-    def __init__(self, path: str = 'BAAI/bge-base-zh-v1.5', is_api: bool = False) -> None:
+    def __init__(self, path: str = 'BAAI/bge-base-en-v1.5', is_api: bool = False) -> None:
         super().__init__(path, is_api)
         self._model, self._tokenizer = self.load_model(path)
 

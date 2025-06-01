@@ -4,20 +4,20 @@
 import os
 import json 
 from typing import Dict, List, Optional, Tuple, Union
-
-API_BASE = "http://172.18.127.124:405807/v1"
+import time
+API_BASE = "http://172.18.127.124:40011/v1"
 API_KEY = "ollama"  # vllm服务默认不需要验证，但需要设置一个虚拟key
 # MODEL_NAME = "deepseek-R1:1.5B"
 PROMPT_TEMPLATE = dict(
-    RAG_PROMPT_TEMPALTE="""使用以上下文来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。
-        问题: {question}
-        可参考的上下文：
+    RAG_PROMPT_TEMPALTE="""Use the context to answer the user's questions. If you don't know the answer, say you don't know. Always respond in English.
+        Question: {question}
+        Relevant context:
         ···
         {context}
         ···
-        如果给定的上下文无法让你做出回答，请回答数据库中没有这个内容，你不知道。
-        有用的回答:""",
-    InternLM_PROMPT_TEMPALTE="""先对上下文进行内容总结,再使用上下文来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中文回答。
+        If the provided context does not allow you to formulate an answer, respond that the database does not contain this information and that you don't know。
+        Helpful response:""",
+    InternLM_PROMPT_TEMPALTE="""先对上下文进行内容总结,再使用上下文来回答用户的问题。如果你不知道答案，就说你不知道。总是使用中英文回答。
         问题: {question}
         可参考的上下文：
         ···
@@ -38,7 +38,7 @@ class BaseModel:
         pass
 
 class OpenAIChat(BaseModel):
-    def __init__(self, path: str = '', model: str = "deepseek-r1-32b") -> None:
+    def __init__(self, path: str = '', model: str = "qwq-32b") -> None:
         super().__init__(path)
         self.model = model
 
@@ -52,13 +52,20 @@ class OpenAIChat(BaseModel):
         # client.base_url = API_BASE
         # client.models =self.model
         history.append({'role': 'user', 'content': PROMPT_TEMPLATE['RAG_PROMPT_TEMPALTE'].format(question=prompt, context=content)})
-        response = client.chat.completions.create(
-            model=self.model,
-            messages=history,
-            max_tokens=5000,
-            stream=False,
-            temperature=0.1
-        )
+        print("Start")
+        try:
+            start_time = time.time()
+            response = client.chat.completions.create(
+                model=self.model,
+                messages=history,
+                max_tokens=5000,
+                stream=False,
+                temperature=0.1
+            )
+            end_time = time.time()
+            print("耗费时间:",end_time-start_time)
+        except:
+            print("请求失败: {str(e)}")
         return response.choices[0].message.content
 
 class InternLMChat(BaseModel):

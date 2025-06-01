@@ -69,7 +69,7 @@ class ReadFiles:
         lines = text.splitlines()  # 假设以换行符分割文本为行
 
         for line in lines:
-            line = line.replace(' ', '')
+            # line = line.replace(' ', '')
             line_len = len(enc.encode(line))
             if line_len > max_token_len:
                 # 如果单行长度就超过限制，则将其分割成多个块
