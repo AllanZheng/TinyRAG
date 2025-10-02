@@ -7,14 +7,14 @@ from ragas.embeddings import LangchainEmbeddingsWrapper
 import typing as t
 from datasets import Dataset
 llm_api_key = "gpustack_dee9ca823290886c_5edfc86aeeeceb1e9ee5162941cb2cb5"
-llm_base_url = "http://172.18.127.124:40011/v1"
+llm_base_url = "http://172.18.30.122:40017/v1"
 embd_api_key = "gpustack_dee9ca823290886c_5edfc86aeeeceb1e9ee5162941cb2cb5"
-embd_base_url = "http://172.18.127.124:40035/v1"
+embd_base_url = "http://172.18.30.122:40050/v1"
 
 # generator with openai models
-generator_llm = ChatOpenAI(model="deepseek-r1-32b", api_key=llm_api_key, base_url=llm_base_url)
+generator_llm = ChatOpenAI(model="Qwen3-32B", api_key=llm_api_key, base_url=llm_base_url,timeout=30)
 
-embeddings = OpenAIEmbeddings(model="bge-m3", api_key=embd_api_key, base_url=embd_base_url)
+embeddings = OpenAIEmbeddings(model="bge-m3", api_key=embd_api_key, base_url=embd_base_url,timeout=15)
 lang_llm=LangchainLLMWrapper(generator_llm) 
 lang_embeddings= LangchainEmbeddingsWrapper(embeddings)
 from ragas.metrics import (

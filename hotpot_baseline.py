@@ -11,7 +11,7 @@ import re
 from datasets import Dataset
 # 未创建向量数据库、更换数据集、或更换其他Embeddings模型后将have_created_db设置为False
 # 运行一次成功创建向量数据库后可以将have_created_db设置为True
-have_created_db = True
+have_created_db = False
 vector_path='./vector/kg_ocean/en' #/vector/kg_ocean/en ocean
 
 # 创建EmbeddingModel

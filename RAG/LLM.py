@@ -5,7 +5,7 @@ import os
 import json 
 from typing import Dict, List, Optional, Tuple, Union
 import time
-API_BASE = "http://172.18.127.124:40011/v1"
+API_BASE = "http://172.18.30.122:40017/v1"
 API_KEY = "ollama"  # vllm服务默认不需要验证，但需要设置一个虚拟key
 # MODEL_NAME = "deepseek-R1:1.5B"
 PROMPT_TEMPLATE = dict(
@@ -38,7 +38,7 @@ class BaseModel:
         pass
 
 class OpenAIChat(BaseModel):
-    def __init__(self, path: str = '', model: str = "qwq-32b") -> None:
+    def __init__(self, path: str = '', model: str = "qwen3-32b") -> None:
         super().__init__(path)
         self.model = model
 
@@ -64,8 +64,8 @@ class OpenAIChat(BaseModel):
             )
             end_time = time.time()
             print("耗费时间:",end_time-start_time)
-        except:
-            print("请求失败: {str(e)}")
+        except Exception as e:
+            print(f"请求失败: {str(e)}")
         return response.choices[0].message.content
 
 class InternLMChat(BaseModel):

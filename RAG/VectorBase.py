@@ -45,8 +45,20 @@ class VectorStore:
     def get_similarity(self, vector1: List[float], vector2: List[float]) -> float:
         return BaseEmbeddings.cosine_similarity(vector1, vector2)
 
+    def get_cov_similarity(self, vector1: List[float], vector2: List[float],EmbeddingModel: BaseEmbeddings) -> float:
+        return EmbeddingModel.covariance_similarity(vector1, vector2)                
+
     def query(self, query: str, EmbeddingModel: BaseEmbeddings, k: int = 1) -> List[str]:
         query_vector = EmbeddingModel.get_embedding(query)
+        # print("query_vector",query_vector)
         result = np.array([self.get_similarity(query_vector, vector)
+                          for vector in self.vectors])
+        return np.array(self.document)[result.argsort()[-k:][::-1]].tolist()
+    
+    def convarinace_query(self, query: str, EmbeddingModel: BaseEmbeddings, k: int = 1) -> List[str]:
+        query_vector = EmbeddingModel.get_embedding(query)
+        # print("query_vector",query_vector)
+        EmbeddingModel.load_background_data(self.vectors)
+        result = np.array([self.get_cov_similarity(query_vector, vector,EmbeddingModel)
                           for vector in self.vectors])
         return np.array(self.document)[result.argsort()[-k:][::-1]].tolist()

@@ -1,0 +1,1 @@
+docker run --name bge-reranker-v2-m3 -d --runtime nvidia --gpus '"device=0"' -v ~/.cache/modelscope:/root/.cache/modelscope --env "VLLM_USE_MODELSCOPE=True" --env "HF_ENDPOINT=https://hf-mirror.com" -p 8001:8000 --ipc=host vllm/vllm-openai:latest --model BAAI/bge-reranker-v2-m3 --gpu-memory-utilization 0.9
